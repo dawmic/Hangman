@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import GameOverPopup from "./GameOverPopup.vue";
 import VictoryPopup from "./VictoryPopup.vue";
+import Words from "./Words.vue";
 const letters = [
   "A",
   "B",
@@ -33,27 +34,29 @@ const letters = [
 
 const selected_letters = ref([]),
   number_of_lives = ref(5),
-  word_to_guess = "hangman",
+  word_to_guess = ref('- - -'),
   correct_letters = ref([]);
 
+const testWord = ref("");
+
 const getWrongLetter = (letter) => {
-  if (word_to_guess.indexOf(letter.toLowerCase()) == -1)
+  if (word_to_guess.value.indexOf(letter.toLowerCase()) == -1)
     selected_letters.value.push(letter);
 };
 
 const getCorrectLetter = (letter) => {
-  if (word_to_guess.indexOf(letter.toLowerCase()) > -1)
+  if (word_to_guess.value.indexOf(letter.toLowerCase()) > -1)
     correct_letters.value.push(letter);
 };
 const checkLetter = (key) => {
   console.log(key);
   getWrongLetter(key);
   getCorrectLetter(key);
-  if (word_to_guess.indexOf(key.toLowerCase()) == -1) {
+  if (word_to_guess.value.indexOf(key.toLowerCase()) == -1) {
     document.querySelector(`[data-key=${key}]`).classList.add("wrong-letter");
     number_of_lives.value--;
   }
-  if (word_to_guess.indexOf(key.toLowerCase()) > -1) {
+  if (word_to_guess.value.indexOf(key.toLowerCase()) > -1) {
     document.querySelector(`[data-key=${key}]`).classList.add("good-letter");
   }
 };
@@ -61,11 +64,11 @@ const checkLetter = (key) => {
 const wrong_selected_letters = computed(() => [
   ...new Set(selected_letters.value),
 ]);
-const hided_word = computed(() => word_to_guess.toUpperCase().split(""));
+const hided_word = computed(() => word_to_guess.value.toUpperCase().split(""));
 const victory_status = computed(
   () =>
     [...new Set(correct_letters.value)].length ==
-    [...new Set(word_to_guess.toUpperCase().split(""))].length
+    [...new Set(word_to_guess.value.toUpperCase().split(""))].length
 );
 
 window.addEventListener("keyup", (ev) => {
@@ -77,15 +80,18 @@ window.addEventListener("keyup", (ev) => {
     return;
   }
 });
+
+const getWordToGuess = (val) => (word_to_guess.value = val);
 </script>
 <template>
+  <Words @wordToGuess="getWordToGuess($event)" />
   <Transition>
     <GameOverPopup v-if="number_of_lives < 1" :correct_word="word_to_guess" />
   </Transition>
   <Transition><VictoryPopup v-if="victory_status" /></Transition>
-<header>
-  <h1 class="game-header">Hangman</h1>
-</header>
+  <header>
+    <h1 class="game-header">Hangman</h1>
+  </header>
   <main class="game-container">
     <p class="selected-letters">{{ word_to_guess }}</p>
     <p class="selected-letters">
@@ -118,10 +124,11 @@ window.addEventListener("keyup", (ev) => {
   </main>
 </template>
 <style lang="scss" scoped>
-  .game-header{
-    -webkit-animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
-	        animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
-  }
+.game-header {
+  -webkit-animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1)
+    both;
+  animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+}
 .game-container {
   position: relative;
   display: flex;
@@ -136,7 +143,6 @@ window.addEventListener("keyup", (ev) => {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    
 
     .letter-item {
       height: 3.2rem;
@@ -150,8 +156,10 @@ window.addEventListener("keyup", (ev) => {
       font-size: 1.76rem;
       transition: 0.3s;
       cursor: pointer;
-      -webkit-animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000) .7s both;
-	        animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000) .7s both;
+      -webkit-animation: tracking-in-expand 0.7s
+        cubic-bezier(0.215, 0.61, 0.355, 1) 0.7s both;
+      animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1)
+        0.7s both;
       &:hover {
         scale: 1.1;
         background-color: lightgray;
