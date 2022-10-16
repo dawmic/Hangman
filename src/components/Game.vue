@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import GameOverPopup from "./GameOverPopup.vue";
 import VictoryPopup from "./VictoryPopup.vue";
 import Words from "./Words.vue";
+import Figure from "./Figure.vue";
 const letters = [
   "A",
   "B",
@@ -33,8 +34,8 @@ const letters = [
 ];
 
 const selected_letters = ref([]),
-  number_of_lives = ref(5),
-  word_to_guess = ref('- - -'),
+  number_of_lives = ref(6),
+  word_to_guess = ref("- - -"),
   correct_letters = ref([]);
 
 const testWord = ref("");
@@ -63,7 +64,7 @@ const checkLetter = (key) => {
 
 const wrong_selected_letters = computed(() => [
   ...new Set(selected_letters.value),
-]);
+].join(','));
 const hided_word = computed(() => word_to_guess.value.toUpperCase().split(""));
 const victory_status = computed(
   () =>
@@ -84,23 +85,23 @@ window.addEventListener("keyup", (ev) => {
 const getWordToGuess = (val) => (word_to_guess.value = val);
 </script>
 <template>
-  <Words @wordToGuess="getWordToGuess($event)" />
-  <Transition>
-    <GameOverPopup v-if="number_of_lives < 1" :correct_word="word_to_guess" />
-  </Transition>
-  <Transition><VictoryPopup v-if="victory_status" /></Transition>
   <header>
-    <h1 class="game-header">Hangman</h1>
+    <h1 class="game-header">Hangman Game</h1>
+    <p class="game-header__paragraph">
+      Try to find the hidden word by typing a letter each time of your choice.
+    </p>
   </header>
   <main class="game-container">
-    <p class="selected-letters">{{ word_to_guess }}</p>
+    <Figure :number_of_lives="number_of_lives" />
+    <Words @wordToGuess="getWordToGuess($event)" />
+    <Transition>
+      <GameOverPopup v-if="number_of_lives < 1" :correct_word="word_to_guess" />
+    </Transition>
+    <Transition><VictoryPopup v-if="victory_status" /></Transition>
     <p class="selected-letters">
-      wrong typed letters {{ wrong_selected_letters }}
+      Incorrect: {{ wrong_selected_letters }}
     </p>
-    <p class="selected-letters">{{ number_of_lives }}</p>
-    <p class="selected-letters">correct letters: {{ correct_letters }}</p>
     <p class="selected-letters" v-if="number_of_lives == 0">GAME OVER</p>
-
     <div class="letter-container">
       <div
         :data-key="letter"
@@ -125,12 +126,21 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
 </template>
 <style lang="scss" scoped>
 .game-header {
-  -webkit-animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1)
-    both;
-  animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  font-size: 2.8rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: #25d622;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+}
+ 
+.game-header__paragraph {
+  font-size: 1.6rem;
+  text-align: center;
+  margin: 1rem 0;
 }
 .game-container {
-  position: relative;
+  // position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -145,13 +155,12 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
     justify-content: center;
 
     .letter-item {
-      height: 3.2rem;
-      width: 3.2rem;
-      border: 2px solid black;
+      height: 3.3rem;
+      width: 3.3rem;
+      border: 2px solid #bac2ba;
       border-radius: 0.8rem;
-      margin: 1rem;
+      margin: 0.5rem;
       text-align: center;
-      color: black;
       line-height: 3rem;
       font-size: 1.76rem;
       transition: 0.3s;
@@ -163,10 +172,7 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
       &:hover {
         scale: 1.1;
         background-color: lightgray;
-      }
-      &:active {
-        background-color: lightgray;
-        scale: 1.1;
+        color: #282828;
       }
     }
   }
@@ -177,9 +183,10 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
     gap: 0.7rem;
     flex-wrap: wrap;
     justify-content: center;
+    margin-top: 2rem;
 
     .hided-letter {
-      border-bottom: 2px solid black;
+      border-bottom: 2px solid #bac2ba;
       height: 2rem;
       width: 2rem;
       text-align: center;
@@ -193,12 +200,10 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
   }
 }
 .wrong-letter {
-  background-color: red;
-  color: white !important;
+  background-color: #b31b1b;
 }
 .good-letter {
-  background-color: green;
-  color: white !important;
+  background-color: #018749;
 }
 
 .v-enter-active,
