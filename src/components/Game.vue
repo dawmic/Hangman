@@ -97,11 +97,10 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
     <Transition>
       <GameOverPopup v-if="number_of_lives < 1" :correct_word="word_to_guess" />
     </Transition>
-    <Transition><VictoryPopup v-if="victory_status" /></Transition>
-    <p class="selected-letters">
+    <Transition><VictoryPopup v-if="victory_status" :correct_word="word_to_guess" /></Transition>
+    <p class="game-header__paragraph">
       Incorrect: {{ wrong_selected_letters }}
     </p>
-    <p class="selected-letters" v-if="number_of_lives == 0">GAME OVER</p>
     <div class="letter-container">
       <div
         :data-key="letter"
@@ -138,9 +137,11 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
   font-size: 1.6rem;
   text-align: center;
   margin: 1rem 0;
+  @media (min-width: 992px){
+    font-size: 1.9rem;
+  }
 }
 .game-container {
-  // position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -174,7 +175,14 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
         background-color: lightgray;
         color: #282828;
       }
+    @media (min-width: 992px){
+     line-height: 3.5rem;
+      height: 4rem;
+      width: 4rem;
+      margin: .6rem;
     }
+    }
+   
   }
 
   .hide-word-container {
@@ -192,6 +200,14 @@ const getWordToGuess = (val) => (word_to_guess.value = val);
       text-align: center;
       line-height: 0.5;
       font-size: 2rem;
+      @media (min-width: 992px){
+        height: 3rem;
+        width: 3rem;
+        font-size: 2.7rem;
+        margin-top: 2rem;
+        line-height: 2rem;
+        margin: 1rem .7rem 0 .7rem;
+      }
       .hided-letter__item {
         opacity: 0;
         transition: 0.5s;

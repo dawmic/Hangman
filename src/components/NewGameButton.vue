@@ -1,6 +1,8 @@
-<script setup></script>
+<script setup>
+  const restart = () => location.reload();
+</script>
 <template>
-  <button class="gameBTn"><slot></slot></button>
+  <button class="gameBTn" @click="restart"><slot></slot></button>
 </template>
 <style lang="scss" scoped>
 .gameBTn {
@@ -17,6 +19,7 @@
     linear-gradient(0deg, #feb800 50%, transparent 0) repeat-y;
   background-size: 6px 3px, 6px 3px, 3px 6px, 3px 6px;
   background-position: 0 0, 0 100%, 0 0, 100% 0;
+  cursor: pointer;
   &:hover {
     animation: runningBorder 0.2s infinite linear;
   }
@@ -27,4 +30,5 @@
     background-position: 6px 0, -6px 100%, 0 -6px, 100% 6px;
   }
 }
+
 </style>
