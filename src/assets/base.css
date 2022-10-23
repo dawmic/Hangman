@@ -49,6 +49,13 @@
     --color-text: var(--vt-c-text-dark-2);
   }
 }
+@media (prefers-reduced-motion: reduce){
+  *{
+    -webkit-animation: none !important;
+    animation: none !important;
+
+  }
+}
 
 *,
 *::before,
@@ -76,3 +83,4 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
